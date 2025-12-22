@@ -1,0 +1,70 @@
+import cv2
+import numpy as np
+
+# 這是我們的主功能，用來找瑕疵或計算物體
+def analyze_image():
+    # 1. 告訴電腦圖片在哪裡
+    image_path = "images/tomatoes.jpg"
+    img = cv2.imread(image_path)
+
+    # 如果找不到圖片，就告訴我
+    if img is None:
+        print("錯誤：找不到圖片，請確認 images 資料夾裡有沒有 tomatoes.jpg")
+        return
+
+    # 複製一張圖，等一下用來畫框框，才不會破壞原圖
+    result_img = img.copy()
+
+    # 2. 把圖片轉成 HSV 模式 (比較好辨識顏色)
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(hsv)
+
+    # 3. 過濾顏色 (抓出番茄的顏色範圍)
+    # 這裡沿用你原本課堂上的參數
+    ret, thresh = cv2.threshold(h, 25, 255, cv2.THRESH_BINARY_INV)
+
+    # 4. 找邊緣 (Canny)
+    edges = cv2.Canny(v, 100, 200, apertureSize=3)
+    edge_inv = 255 - edges # 把黑白反過來
+
+    # 5. 去除雜訊 (Erode)
+    kernel = np.ones((3, 3), "uint8")
+    eroded_edges = cv2.erode(edge_inv, kernel, iterations=1)
+
+    # 結合一下
+    final_thresh = cv2.bitwise_and(thresh, eroded_edges)
+
+    # 6. 找出所有物體的輪廓
+    contours, hierarchy = cv2.findContours(final_thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 7. 畫圖和計算
+    count = 0
+    for c in contours:
+        area = cv2.contourArea(c)
+        # 如果面積大於 300 像素，我們才當作它是番茄，太小的雜點不要算
+        if area >= 300:
+            count += 1
+            # 畫綠色框框
+            cv2.drawContours(result_img, [c], -1, (0, 255, 0), 2)
+            
+            # 算出中心點
+            M = cv2.moments(c)
+            if M["m00"] != 0:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+                # 在中心點畫一個小紅點
+                cv2.circle(result_img, (cx, cy), 5, (0, 0, 255), -1)
+
+    print(f"成功！總共偵測到 {count} 個物體")
+
+    # 8. 顯示結果
+    cv2.imshow("Original", img)
+    cv2.imshow("Result", result_img)
+    
+    # 按任意鍵關閉視窗
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+# 執行程式
+if __name__ == "__main__":
+    analyze_image()
