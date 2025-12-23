@@ -49,7 +49,7 @@ def analyze_image():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-# 執行程式
 if __name__ == "__main__":
 
     analyze_image()
+
