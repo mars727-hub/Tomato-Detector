@@ -1,3 +1,43 @@
+# My First Dip into OpenCV: Automatic Tomato Detector 🍅
+
+I've always been fascinated by the "magic" of Computer Vision, so I decided to take the plunge and signed up for an OpenCV course at Chung Yuan Christian University (CYCU). Truth be told, the commute was brutal. I had to leave at 7 AM every Saturday, take a train from Taipei to Zhongli, and then ride a YouBike to the campus. I’ll never forget the first class coinciding with the school anniversary—I got stuck in traffic for an hour waiting for the shuttle bus just to get back to the train station!
+
+This "Tomato Detector" was a mini-project I built during that course. The instructor’s motivation was simple: Can we write a program that lets the computer "see" and count the tomatoes in a photo, so we don't have to do it with our naked eyes?
+
+So, I tried my hand at OpenCV to handle the image detection. In the end, I actually succeeded in teaching the computer how to count the tomatoes and locate their centers.
+
+## What can this little program do?
+
+In most cases, the biggest enemy of image processing is noise. So, this project wasn't just about "finding things"; I spent a lot of time teaching the program how to "see" the world properly:
+
+**1. Auto-Targeting:** Whether it's a tomato or another round object, the program attempts to lock onto it and draw a circle around it.
+
+**2. Noise Filtering:** Photos often have dirt spots or lighting artifacts. I implemented a mechanism to automatically ignore specks that are too small to be relevant.
+
+**3. Automated Counting:** It acts as a tally counter, telling me exactly how many qualified products are in the frame, saving manual effort. I’m currently thinking about how to apply this to my work in the **Offshore Wind Industry**. If we can standardize markings on defective electromechanical parts and let a computer identify them automatically, it would be a huge help for QA/QC inspections! (Definitely something to try in the future).
+
+## Technical Details
+
+Since I already had a background in **Python**, the learning curve felt manageable. The core logic is built with Python, while the heavy lifting for image processing is done by **OpenCV (cv2)**.
+
+To improve object recognition accuracy, I skipped the standard RGB and switched to the **HSV Color Space**, which is often more reliable for isolating specific colors. I then used **Canny Edge Detection** to outline shapes and applied **Morphological Operations (Erode)** to refine the contours and separate lines that were sticking together. The mathematical calculations were handled by **NumPy**.
+
+## Results
+
+Here is the execution result. As you can see, the tomatoes have been successfully detected and boxed!
+
+![Tomato Detection Result](images/demo.jpg)
+
+## Want to try it out?
+
+1. First, run this line to set up your environment:
+`pip install -r requirements.txt`
+
+2. Then, simply run the main program:
+`python main.py`
+
+*I rebuilt this project after the course mainly to test my own understanding of OpenCV image processing. Looking back, I know it’s a very beginner-level project haha, but the moment I saw the computer correctly circle those tomatoes, the sense of accomplishment was amazing. It definitely gave me the motivation to try building more complex projects.*
+
 # OpenCV 初體驗---自動番茄檢測器
 
 說起來，電腦視覺這塊領域，一直都讓我覺得挺神奇的，我也非常有興趣，所以毅然決然去上了在中原大學的OpenCV課。老實說真的超遠的，禮拜六還要早上7點出門，從台北搭火車到中壢，再騎YouBike到中原。永遠不會忘記第一堂課剛好遇到校慶，回程待接駁車一路塞了1個小時才回到火車站。
